@@ -1,0 +1,101 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:16.1
+    restart: always
+    container_name: database
+    environment:
+      - POSTGRES_DATABASES=fastapi
+      - POSTGRES_USER=fastapi
+      - POSTGRES_PASSWORD=fastapi
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      fastapi:
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "fastapi@test.com"
+      PGADMIN_DEFAULT_PASSWORD: "fastapi"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - 5050:80
+    depends_on:
+      - database
+    networks:
+      fastapi:
+
+  rabbitmq:
+    image: rabbitmq:3.12.9-management-alpine
+    restart: always
+    container_name: rabbitmq
+    hostname: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=rmuser
+      - RABBITMQ_DEFAULT_PASS=rmpassword
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
+    volumes:
+      - ./services/rabbitmq:/var/lib/rabbitmq
+      - ./services/rabbitmq/delayed_message.ez:/opt/rabbitmq/plugins/delayed_message.ez
+      - ./services/rabbitmq/enabled:/etc/rabbitmq/enabled_plugins
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 25672:25672
+    depends_on:
+      - database
+    networks:
+      fastapi:
+
+  fastapi:
+    build:
+      context: ./services/fastapi
+      dockerfile: ./Dockerfile
+    container_name: fastapi
+    command: uvicorn app:app --host 0.0.0.0 --port 8888 --workers 4 --lifespan on
+    volumes:
+      - static:/home/app/fastapi/static
+      - logs:/home/app/fastapi/logs
+      - ./services/fastapi/templates:/home/app/fastapi/templates
+      - ./services/fastapi:/home/app/fastapi
+    ports:
+      - 80:8888
+    depends_on:
+      - database
+      - rabbitmq
+    networks:
+      fastapi:
+
+#  nginx:
+#    build:
+#      context: ./services/nginx
+#      dockerfile: ./Dockerfile
+#    container_name: nginx
+#    restart: always
+#    ports:
+#      - 5050:80
+#      - 80:8888
+#    depends_on:
+#      - database
+#      - fastapi
+#    networks:
+#      fastapi:
+
+networks:
+  fastapi:
+
+volumes:
+  rabbitmq_data:
+  database:
+  pgadmin:
+  static:
+  logs:
+
