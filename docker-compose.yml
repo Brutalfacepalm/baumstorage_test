@@ -61,6 +61,8 @@ services:
       dockerfile: ./Dockerfile
     container_name: fastapi
     command: python3 app.py
+    env_file:
+      .env.dev
     volumes:
       - ./services/fastapi:/fastapi
     ports:
