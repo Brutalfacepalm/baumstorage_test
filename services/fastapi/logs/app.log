@@ -1,0 +1,28 @@
+2023-11-20 22:10:36,500 — logger — INFO — Application FastAPI was created
+2023-11-20 22:10:36,501 — logger — INFO — Application FastAPI was created
+2023-11-20 22:10:36,515 — logger — INFO — Connect RabbitMQ
+2023-11-20 22:10:36,522 — logger — INFO — Connect RabbitMQ
+2023-11-20 22:10:36,586 — logger — INFO — Startup FastAPI
+2023-11-20 22:10:36,587 — logger — INFO — Startup FastAPI
+2023-11-20 22:10:36,603 — logger — INFO — Application FastAPI was created
+2023-11-20 22:10:36,612 — logger — INFO — Connect RabbitMQ
+2023-11-20 22:10:36,668 — logger — INFO — Startup FastAPI
+2023-11-20 22:10:36,969 — logger — INFO — Application FastAPI was created
+2023-11-20 22:10:36,985 — logger — INFO — Connect RabbitMQ
+2023-11-20 22:10:37,027 — logger — INFO — Startup FastAPI
+2023-11-20 22:10:44,767 — logger — INFO — Get new source data
+2023-11-20 22:10:44,774 — logger — INFO — Correct publish message to RabbitMQ
+2023-11-20 22:10:47,802 — logger — INFO — Correct done SimpleTask and load to database
+2023-11-20 22:10:47,810 — logger — INFO — Session close
+2023-11-20 22:11:01,006 — logger — INFO — Get new source data
+2023-11-20 22:11:01,012 — logger — INFO — Correct publish message to RabbitMQ
+2023-11-20 22:11:01,470 — logger — INFO — Get new source data
+2023-11-20 22:11:01,478 — logger — INFO — Correct publish message to RabbitMQ
+2023-11-20 22:11:01,933 — logger — INFO — Get new source data
+2023-11-20 22:11:01,938 — logger — INFO — Correct publish message to RabbitMQ
+2023-11-20 22:11:04,047 — logger — INFO — Correct done SimpleTask and load to database
+2023-11-20 22:11:04,048 — logger — INFO — Session close
+2023-11-20 22:11:04,514 — logger — INFO — Correct done SimpleTask and load to database
+2023-11-20 22:11:04,515 — logger — INFO — Session close
+2023-11-20 22:11:04,972 — logger — INFO — Correct done SimpleTask and load to database
+2023-11-20 22:11:04,972 — logger — INFO — Session close

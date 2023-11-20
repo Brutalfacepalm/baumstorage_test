@@ -11,6 +11,7 @@ class SimpleTask:
     SimpleTask. Count Х in message, create correct data and load data to database.
     """
     session = None
+    logger = None
 
     @classmethod
     async def simple_task(cls, dt, title, text):
@@ -24,9 +25,10 @@ class SimpleTask:
             x_count += message.count('Х')
         async with cls.session.begin() as session:
             send_message_db = XMessageQueryset()
-            await send_message_db.create(session, **{'datetime': dt,
-                                                     'title': title,
-                                                     'x_avg_count_in_line': x_count / m_count})
+            await send_message_db.create(session,
+                                         cls.logger, **{'datetime': dt,
+                                                        'title': title,
+                                                        'x_avg_count_in_line': x_count / m_count})
 
 
 async def process_message(message: AbstractIncomingMessage):
@@ -39,17 +41,18 @@ async def process_message(message: AbstractIncomingMessage):
         message = TextSchema.parse_obj(json.loads(message.body.decode()))
         method = SimpleTask.simple_task
         if method:
-            result = await method(message.datetime, message.title, message.text)
-            return result
+            await method(message.datetime, message.title, message.text)
 
 
-async def task(session):
+async def task(session, logger):
     """
     Connect to queue RabbitMQ, get message and run task for load result to database
     :param session: AsyncSession sqlalchemy to database
+    :param logger: logger
     :return:
     """
     SimpleTask.session = session
+    SimpleTask.logger = logger
     queue_key = 'main'
     url_queue = 'amqp://rmuser:rmpassword@rabbitmq:5672/'
 

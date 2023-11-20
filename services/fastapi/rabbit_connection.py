@@ -16,7 +16,7 @@ class RabbitConnection:
     _channel: AbstractRobustChannel | None = None
     _exchange: AbstractRobustExchange | None = None
 
-    async def disconnect(self) -> None:
+    async def disconnect(self, logger):
         """
         Disconnect from RabbitMQ and close channel.
         """
@@ -26,8 +26,9 @@ class RabbitConnection:
             await self._connection.close()
         self._connection = None
         self._channel = None
+        logger.info('Disconnect RabbitMQ')
 
-    async def connect(self) -> None:
+    async def connect(self, logger):
         """
         Connect to RabbitMQ service and create channel and exchange.
         """
@@ -39,11 +40,12 @@ class RabbitConnection:
                                                                   ExchangeType.X_DELAYED_MESSAGE,
                                                                   arguments={'x-delayed-type': 'direct'}
                                                                   )
+            logger.info('Connect RabbitMQ')
         except Exception as e:
-            print(e)
-            await self.disconnect()
+            logger.error(f'Error connection to RabbitMQ with Exception: {e}')
+            await self.disconnect(logger)
 
-    async def send_message(self, messages, *, routing_key: str = 'main', delay: int = None):
+    async def send_message(self, messages, logger, *, routing_key: str = 'main', delay: int = None):
         """
         Publish message in exchange with delay.
         """
@@ -58,5 +60,6 @@ class RabbitConnection:
                     message['datetime'] = message['datetime'].strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]
                 message = Message(body=json.dumps(message).encode(), headers=headers)
                 await self._exchange.publish(message, routing_key=routing_key, mandatory=False if delay else True)
+                logger.info('Correct publish message to RabbitMQ')
         except Exception as e:
-            print(e)
+            logger.error(f'Error publish message to RabbitMQ with Exception: {e}')
