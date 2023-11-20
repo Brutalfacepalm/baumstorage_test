@@ -11,9 +11,9 @@ services:
       - POSTGRES_PASSWORD=fastapi
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - database:/var/lib/postgresql/data
+      - ./services/database:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - "5432:5432"
     networks:
       fastapi:
 
@@ -27,7 +27,7 @@ services:
     volumes:
       - pgadmin:/var/lib/pgadmin
     ports:
-      - 5050:80
+      - "5050:80"
     depends_on:
       - database
     networks:
@@ -47,9 +47,9 @@ services:
       - ./services/rabbitmq/delayed_message.ez:/opt/rabbitmq/plugins/delayed_message.ez
       - ./services/rabbitmq/enabled:/etc/rabbitmq/enabled_plugins
     ports:
-      - 5672:5672
-      - 15672:15672
-      - 25672:25672
+      - "5672:5672"
+      - "15672:15672"
+      - "25672:25672"
     depends_on:
       - database
     networks:
@@ -62,40 +62,17 @@ services:
     container_name: fastapi
     command: uvicorn app:app --host 0.0.0.0 --port 8888 --workers 4 --lifespan on
     volumes:
-      - static:/home/app/fastapi/static
-      - logs:/home/app/fastapi/logs
-      - ./services/fastapi/templates:/home/app/fastapi/templates
-      - ./services/fastapi:/home/app/fastapi
+      - ./services/fastapi:/fastapi
     ports:
-      - 80:8888
+      - "80:8888"
     depends_on:
       - database
       - rabbitmq
     networks:
       fastapi:
 
-#  nginx:
-#    build:
-#      context: ./services/nginx
-#      dockerfile: ./Dockerfile
-#    container_name: nginx
-#    restart: always
-#    ports:
-#      - 5050:80
-#      - 80:8888
-#    depends_on:
-#      - database
-#      - fastapi
-#    networks:
-#      fastapi:
-
 networks:
   fastapi:
 
 volumes:
-  rabbitmq_data:
-  database:
   pgadmin:
-  static:
-  logs:
-

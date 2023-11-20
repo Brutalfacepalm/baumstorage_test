@@ -5,5 +5,3 @@ engine = create_async_engine('postgresql+asyncpg://fastapi:fastapi@database:5432
 sm = sessionmaker(engine, autocommit=False, autoflush=False, class_=AsyncSession)
 
 Base = declarative_base()
-
-
