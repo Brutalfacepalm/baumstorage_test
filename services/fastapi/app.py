@@ -1,3 +1,4 @@
+import os
 import asyncio
 import click
 import uvicorn
@@ -15,7 +16,7 @@ from consumer import task
 from getlogger import get_logger
 
 
-async def create_app():
+def create_app():
     loop = asyncio.get_event_loop()
 
     @asynccontextmanager
@@ -39,6 +40,7 @@ async def create_app():
 
     logger = get_logger()
     app = FastAPI(lifespan=lifespan, docs_url='/')
+                  # debug=True if os.environ.get('FASTAPI_DEBUG') == 'on' else False)
     app.state.engine = engine
     app.state.session_maker = session_maker
     app.rabbit_connection = RabbitConnection()
@@ -74,11 +76,14 @@ async def create_app():
 @click.command()
 @click.option('--host', '-h', default='0.0.0.0')
 @click.option('--port', '-p', default='8888')
-# @click.option('--workers', default=1)
-# @click.option('--lifespan', default='on')
-def main(host, port):
+@click.option('--workers', default=1)
+@click.option('--lifespan', default='on')
+@click.option('--debug', default=True)
+def main(host, port, workers, lifespan, debug):
     uvicorn.run(f"{__name__}:create_app",
-                host=host, port=port, debug=True
+                host=host, port=port,
+                workers=workers, lifespan=lifespan,
+                debug=debug
                 )
 
 
