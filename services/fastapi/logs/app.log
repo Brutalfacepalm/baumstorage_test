@@ -1,28 +1,21 @@
-2023-11-20 22:10:36,500 — logger — INFO — Application FastAPI was created
-2023-11-20 22:10:36,501 — logger — INFO — Application FastAPI was created
-2023-11-20 22:10:36,515 — logger — INFO — Connect RabbitMQ
-2023-11-20 22:10:36,522 — logger — INFO — Connect RabbitMQ
-2023-11-20 22:10:36,586 — logger — INFO — Startup FastAPI
-2023-11-20 22:10:36,587 — logger — INFO — Startup FastAPI
-2023-11-20 22:10:36,603 — logger — INFO — Application FastAPI was created
-2023-11-20 22:10:36,612 — logger — INFO — Connect RabbitMQ
-2023-11-20 22:10:36,668 — logger — INFO — Startup FastAPI
-2023-11-20 22:10:36,969 — logger — INFO — Application FastAPI was created
-2023-11-20 22:10:36,985 — logger — INFO — Connect RabbitMQ
-2023-11-20 22:10:37,027 — logger — INFO — Startup FastAPI
-2023-11-20 22:10:44,767 — logger — INFO — Get new source data
-2023-11-20 22:10:44,774 — logger — INFO — Correct publish message to RabbitMQ
-2023-11-20 22:10:47,802 — logger — INFO — Correct done SimpleTask and load to database
-2023-11-20 22:10:47,810 — logger — INFO — Session close
-2023-11-20 22:11:01,006 — logger — INFO — Get new source data
-2023-11-20 22:11:01,012 — logger — INFO — Correct publish message to RabbitMQ
-2023-11-20 22:11:01,470 — logger — INFO — Get new source data
-2023-11-20 22:11:01,478 — logger — INFO — Correct publish message to RabbitMQ
-2023-11-20 22:11:01,933 — logger — INFO — Get new source data
-2023-11-20 22:11:01,938 — logger — INFO — Correct publish message to RabbitMQ
-2023-11-20 22:11:04,047 — logger — INFO — Correct done SimpleTask and load to database
-2023-11-20 22:11:04,048 — logger — INFO — Session close
-2023-11-20 22:11:04,514 — logger — INFO — Correct done SimpleTask and load to database
-2023-11-20 22:11:04,515 — logger — INFO — Session close
-2023-11-20 22:11:04,972 — logger — INFO — Correct done SimpleTask and load to database
-2023-11-20 22:11:04,972 — logger — INFO — Session close
+2023-11-20 22:20:05,612 — logger — INFO — Application FastAPI was created
+2023-11-20 22:20:05,634 — logger — INFO — Connect RabbitMQ
+2023-11-20 22:20:05,649 — logger — INFO — Application FastAPI was created
+2023-11-20 22:20:05,657 — logger — INFO — Application FastAPI was created
+2023-11-20 22:20:05,666 — logger — INFO — Connect RabbitMQ
+2023-11-20 22:20:05,687 — logger — INFO — Connect RabbitMQ
+2023-11-20 22:20:05,685 — logger — INFO — Startup FastAPI
+2023-11-20 22:20:05,704 — logger — INFO — Startup FastAPI
+2023-11-20 22:20:05,727 — logger — INFO — Startup FastAPI
+2023-11-20 22:20:05,749 — logger — INFO — Application FastAPI was created
+2023-11-20 22:20:05,758 — logger — INFO — Connect RabbitMQ
+2023-11-20 22:20:05,794 — logger — INFO — Startup FastAPI
+2023-11-20 22:20:12,117 — logger — INFO — Get new source data
+2023-11-20 22:20:12,127 — logger — INFO — Correct publish message to RabbitMQ
+2023-11-20 22:20:15,164 — logger — INFO — Correct done SimpleTask and load to database
+2023-11-20 22:20:15,165 — logger — INFO — Session close
+2023-11-20 22:20:18,490 — logger — INFO — Select from database correct
+2023-11-20 22:27:13,070 — logger — INFO — Disconnect RabbitMQ
+2023-11-20 22:27:13,320 — logger — INFO — Disconnect RabbitMQ
+2023-11-20 22:27:13,622 — logger — INFO — Disconnect RabbitMQ
+2023-11-20 22:27:13,922 — logger — INFO — Disconnect RabbitMQ

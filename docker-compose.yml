@@ -60,7 +60,7 @@ services:
       context: ./services/fastapi
       dockerfile: ./Dockerfile
     container_name: fastapi
-    command: uvicorn app:app --host 0.0.0.0 --port 8888 --workers 4 --lifespan on
+    command: python3 app.py
     volumes:
       - ./services/fastapi:/fastapi
     ports:
