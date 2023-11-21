@@ -1,3 +1,4 @@
+import os
 import json
 from aio_pika.robust_connection import AbstractRobustConnection
 from aio_pika.robust_channel import AbstractRobustChannel
@@ -33,8 +34,10 @@ class RabbitConnection:
         Connect to RabbitMQ service and create channel and exchange.
         """
         try:
-            url_broker = 'amqp://rmuser:rmpassword@rabbitmq:5672/'
-            self._connection = await connect_robust(url_broker)
+            self._connection = await connect_robust(host=os.environ.get("RABBITMQ_HOST"),
+                                                    port=int(os.environ.get("RABBITMQ_PORT")),
+                                                    login=os.environ.get("RABBITMQ_USER"),
+                                                    password=os.environ.get("RABBITMQ_PASSWORD"))
             self._channel = await self._connection.channel(publisher_confirms=False)
             self._exchange = await self._channel.declare_exchange('main',
                                                                   ExchangeType.X_DELAYED_MESSAGE,
@@ -45,7 +48,7 @@ class RabbitConnection:
             logger.error(f'Error connection to RabbitMQ with Exception: {e}')
             await self.disconnect(logger)
 
-    async def send_message(self, messages, logger, *, routing_key: str = 'main', delay: int = None):
+    async def send_message(self, message, logger, *, routing_key: str = 'main', delay: int = None):
         """
         Publish message in exchange with delay.
         """
@@ -55,7 +58,7 @@ class RabbitConnection:
                 if delay:
                     headers = {'x-delay': f'{delay * 1000}'}
                 # for message in [messages]:
-                message = messages.dict()
+                message = message.dict()
                 if 'datetime' in message:
                     message['datetime'] = message['datetime'].strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]
                 message = Message(body=json.dumps(message).encode(), headers=headers)

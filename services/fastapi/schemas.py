@@ -2,13 +2,13 @@ from datetime import datetime as dt
 from pydantic import BaseModel, Field, validator
 
 
-class MessageSchema(BaseModel):
+class XMessageSchema(BaseModel):
     """
     Schema for message to select from database and return GET method FastAPI.
     """
     datetime: str = Field(..., description='Дата и время')
     title: str = Field(..., description='Заголовок')
-    x_avg_count_in_line: float = Field(..., description='Среднне число вхождений')
+    x_avg_count_in_line: float = Field(..., description='Число вхождений')
 
     @validator('datetime', pre=True)
     def parse_datetime(cls, value):
@@ -25,7 +25,7 @@ class MessageSchema(BaseModel):
         return round(value, 3)
 
 
-class XMessageViewSchema(MessageSchema):
+class XMessageViewSchema(XMessageSchema):
     """
     Additional XMessageSchema where add field ID
     """

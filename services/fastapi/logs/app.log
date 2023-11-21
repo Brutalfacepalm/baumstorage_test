@@ -1,21 +1,9 @@
-2023-11-20 22:20:05,612 — logger — INFO — Application FastAPI was created
-2023-11-20 22:20:05,634 — logger — INFO — Connect RabbitMQ
-2023-11-20 22:20:05,649 — logger — INFO — Application FastAPI was created
-2023-11-20 22:20:05,657 — logger — INFO — Application FastAPI was created
-2023-11-20 22:20:05,666 — logger — INFO — Connect RabbitMQ
-2023-11-20 22:20:05,687 — logger — INFO — Connect RabbitMQ
-2023-11-20 22:20:05,685 — logger — INFO — Startup FastAPI
-2023-11-20 22:20:05,704 — logger — INFO — Startup FastAPI
-2023-11-20 22:20:05,727 — logger — INFO — Startup FastAPI
-2023-11-20 22:20:05,749 — logger — INFO — Application FastAPI was created
-2023-11-20 22:20:05,758 — logger — INFO — Connect RabbitMQ
-2023-11-20 22:20:05,794 — logger — INFO — Startup FastAPI
-2023-11-20 22:20:12,117 — logger — INFO — Get new source data
-2023-11-20 22:20:12,127 — logger — INFO — Correct publish message to RabbitMQ
-2023-11-20 22:20:15,164 — logger — INFO — Correct done SimpleTask and load to database
-2023-11-20 22:20:15,165 — logger — INFO — Session close
-2023-11-20 22:20:18,490 — logger — INFO — Select from database correct
-2023-11-20 22:27:13,070 — logger — INFO — Disconnect RabbitMQ
-2023-11-20 22:27:13,320 — logger — INFO — Disconnect RabbitMQ
-2023-11-20 22:27:13,622 — logger — INFO — Disconnect RabbitMQ
-2023-11-20 22:27:13,922 — logger — INFO — Disconnect RabbitMQ
+2023-11-21 15:00:04,969 — logger — INFO — Session close
+2023-11-21 15:00:09,622 — logger — INFO — Correct done SimpleTask and update to database
+2023-11-21 15:00:09,623 — logger — INFO — Session close
+2023-11-21 15:00:13,984 — logger — INFO — Correct done SimpleTask and update to database
+2023-11-21 15:00:13,985 — logger — INFO — Session close
+2023-11-21 15:00:18,631 — logger — INFO — Correct done SimpleTask and update to database
+2023-11-21 15:00:18,631 — logger — INFO — Session close
+2023-11-21 15:00:22,993 — logger — INFO — Correct done SimpleTask and update to database
+2023-11-21 15:00:22,993 — logger — INFO — Session close

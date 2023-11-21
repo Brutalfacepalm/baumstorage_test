@@ -1,7 +1,7 @@
+import os
 import json
 from aio_pika.message import AbstractIncomingMessage
-from aio_pika import ExchangeType
-import aio_pika
+from aio_pika import ExchangeType, connect_robust
 from querysets import XMessageQueryset
 from schemas import TextSchema
 
@@ -18,17 +18,15 @@ class SimpleTask:
         """
         Calculate average count Х in text and load result to database.
         """
-        x_count = 0
-        messages = text.split('\n')
-        m_count = len(messages)
-        for message in messages:
-            x_count += message.count('Х')
+        x_count = text.count('Х')
+        m_count = 1
         async with cls.session.begin() as session:
             send_message_db = XMessageQueryset()
-            await send_message_db.create(session,
-                                         cls.logger, **{'datetime': dt,
-                                                        'title': title,
-                                                        'x_avg_count_in_line': x_count / m_count})
+            await send_message_db.merge(session,
+                                        cls.logger, {'datetime': dt,
+                                                     'title': title,
+                                                     'x_count': x_count,
+                                                     'line_count': m_count})
 
 
 async def process_message(message: AbstractIncomingMessage):
@@ -54,9 +52,11 @@ async def task(session, logger):
     SimpleTask.session = session
     SimpleTask.logger = logger
     queue_key = 'main'
-    url_queue = 'amqp://rmuser:rmpassword@rabbitmq:5672/'
 
-    connection = await aio_pika.connect_robust(url_queue)
+    connection = await connect_robust(host=os.environ.get("RABBITMQ_HOST"),
+                                      port=int(os.environ.get("RABBITMQ_PORT")),
+                                      login=os.environ.get("RABBITMQ_USER"),
+                                      password=os.environ.get("RABBITMQ_PASSWORD"))
     channel = await connection.channel(publisher_confirms=False)
     await channel.set_qos(prefetch_count=100)
     queue = await channel.declare_queue(queue_key)
