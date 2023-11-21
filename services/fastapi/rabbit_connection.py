@@ -39,20 +39,26 @@ class RabbitConnection:
                                                     login=os.environ.get("RABBITMQ_USER"),
                                                     password=os.environ.get("RABBITMQ_PASSWORD"))
             self._channel = await self._connection.channel(publisher_confirms=False)
-            self._exchange = await self._channel.declare_exchange('main',
-                                                                  ExchangeType.X_DELAYED_MESSAGE,
-                                                                  arguments={'x-delayed-type': 'direct'}
-                                                                  )
+            # self._exchange = await self._channel.declare_exchange(os.environ.get("RABBITMQ_QUEUE"),
+            #                                                       ExchangeType.X_DELAYED_MESSAGE,
+            #                                                       arguments={'x-delayed-type': 'direct'}
+            #                                                       )
             logger.info('Connect RabbitMQ')
         except Exception as e:
             logger.error(f'Error connection to RabbitMQ with Exception: {e}')
             await self.disconnect(logger)
 
-    async def send_message(self, message, logger, *, routing_key: str = 'main', delay: int = None):
+    async def send_message(self, message, logger, *,
+                           exchange, routing_key: str,
+                           delay: int = None):
         """
         Publish message in exchange with delay.
         """
         try:
+            # _exchange = await self._channel.declare_exchange(routing_key,
+            #                                                  ExchangeType.X_DELAYED_MESSAGE,
+            #                                                  arguments={'x-delayed-type': 'direct'}
+            #                                                  )
             async with self._channel.transaction():
                 headers = None
                 if delay:
@@ -62,7 +68,6 @@ class RabbitConnection:
                 if 'datetime' in message:
                     message['datetime'] = message['datetime'].strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]
                 message = Message(body=json.dumps(message).encode(), headers=headers)
-                await self._exchange.publish(message, routing_key=routing_key, mandatory=False if delay else True)
-                logger.info('Correct publish message to RabbitMQ')
+                await exchange.publish(message, routing_key=routing_key, mandatory=False)
         except Exception as e:
             logger.error(f'Error publish message to RabbitMQ with Exception: {e}')

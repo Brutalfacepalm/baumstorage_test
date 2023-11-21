@@ -18,7 +18,8 @@ class XMessageQueryset:
         :param data_dict: data for load
         """
         try:
-            to_update = await session.scalar(select(cls.model).where(cls.model.datetime == data_dict['datetime']))
+            to_update = await session.scalar(select(cls.model).where((cls.model.datetime == data_dict['datetime']) &
+                                                                     (cls.model.title == data_dict['title'])))
             if to_update:
                 to_update = to_update.to_dict()
                 data_dict['x_count'] += to_update['x_count']

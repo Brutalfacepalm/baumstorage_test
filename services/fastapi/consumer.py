@@ -2,7 +2,6 @@ import os
 import json
 from aio_pika.message import AbstractIncomingMessage
 from aio_pika import ExchangeType, connect_robust
-from querysets import XMessageQueryset
 from schemas import TextSchema
 
 
@@ -10,59 +9,56 @@ class SimpleTask:
     """
     SimpleTask. Count Х in message, create correct data and load data to database.
     """
-    session = None
-    logger = None
+    def __int__(self):
+        self.x_count = 0
+        self.line_count = 0
 
-    @classmethod
-    async def simple_task(cls, dt, title, text):
+    async def simple_task(self, text):
         """
         Calculate average count Х in text and load result to database.
         """
-        x_count = text.count('Х')
-        m_count = 1
-        async with cls.session.begin() as session:
-            send_message_db = XMessageQueryset()
-            await send_message_db.merge(session,
-                                        cls.logger, {'datetime': dt,
-                                                     'title': title,
-                                                     'x_count': x_count,
-                                                     'line_count': m_count})
+        self.x_count += text.count('Х')
+        self.line_count += 1
+
+    async def process_message(self, message: AbstractIncomingMessage):
+        """
+        Run task for message.
+        :param message: message from queue RabbitMQ
+        :return:
+        """
+        async with message.process():
+            message = TextSchema.parse_obj(json.loads(message.body.decode()))
+            method = self.simple_task
+            if method:
+                await method(message.text)
 
 
-async def process_message(message: AbstractIncomingMessage):
-    """
-    Run task for message.
-    :param message: message from queue RabbitMQ
-    :return:
-    """
-    async with message.process():
-        message = TextSchema.parse_obj(json.loads(message.body.decode()))
-        method = SimpleTask.simple_task
-        if method:
-            await method(message.datetime, message.title, message.text)
-
-
-async def task(session, logger):
+async def task(routing_key):
     """
     Connect to queue RabbitMQ, get message and run task for load result to database
-    :param session: AsyncSession sqlalchemy to database
-    :param logger: logger
+    :param routing_key: kqy for queue and exchange
     :return:
     """
-    SimpleTask.session = session
-    SimpleTask.logger = logger
-    queue_key = 'main'
+    simple_task = SimpleTask()
+    simple_task.x_count = 0
+    simple_task.line_count = 0
+    queue_key = routing_key
 
     connection = await connect_robust(host=os.environ.get("RABBITMQ_HOST"),
                                       port=int(os.environ.get("RABBITMQ_PORT")),
                                       login=os.environ.get("RABBITMQ_USER"),
                                       password=os.environ.get("RABBITMQ_PASSWORD"))
     channel = await connection.channel(publisher_confirms=False)
-    await channel.set_qos(prefetch_count=100)
-    queue = await channel.declare_queue(queue_key)
-    exchange = await channel.declare_exchange('main',
+    await channel.set_qos()
+    queue = await channel.declare_queue(queue_key, auto_delete=True, timeout=10000)
+    exchange = await channel.declare_exchange(queue_key,
                                               ExchangeType.X_DELAYED_MESSAGE,
                                               arguments={'x-delayed-type': 'direct'}
                                               )
     await queue.bind(exchange, queue_key)
-    await queue.consume(process_message)
+    await queue.consume(simple_task.process_message)
+
+    return simple_task, channel, queue
+
+
+
