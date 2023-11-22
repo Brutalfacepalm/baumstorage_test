@@ -13,6 +13,7 @@ from schemas import XMessageSchema, TextSchema
 from rabbit_connection import RabbitConnection
 from consumer import consumer_task
 from getlogger import get_logger
+from datetime import datetime
 
 
 @asynccontextmanager
@@ -58,7 +59,7 @@ async def get_stat_texts(request: Request):
                  'x_avg_count_in_line': 0.}]
 
 
-async def load_to_database(dt, title, result):
+async def load_to_database(dt, title, result, queue):
     async with app.state.session_maker.begin() as session:
         send_message_db = XMessageQueryset()
         await send_message_db.merge(session,
@@ -88,7 +89,7 @@ async def load_and_send_text(data: TextSchema):
     source_data = data.dict()
     dt = source_data['datetime'].strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]
     title = source_data['title']
-    declare_exchange_key = str(source_data['datetime'].timestamp()) + title
+    declare_exchange_key = str(datetime.now().timestamp()) + title
 
     exchange = await app.rabbit_connection._channel.declare_exchange(declare_exchange_key,
                                                                      ExchangeType.X_DELAYED_MESSAGE,
@@ -107,7 +108,7 @@ async def load_and_send_text(data: TextSchema):
         print(e)
         logger.info(f'Error send any message to RabbitMQ with {e}')
 
-    await load_to_database(source_data['datetime'], title, result)
+    await load_to_database(source_data['datetime'], title, result, queue)
     await channel.exchange_delete(declare_exchange_key)
     logger.info('Current exchange was delete')
 

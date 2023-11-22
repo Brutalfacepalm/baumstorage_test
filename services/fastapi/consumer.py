@@ -1,3 +1,4 @@
+import asyncio
 import os
 import json
 from aio_pika.message import AbstractIncomingMessage
@@ -13,7 +14,7 @@ class SimpleTask:
         self.x_count = 0
         self.line_count = 0
 
-    async def simple_task(self, text):
+    def simple_task(self, text):
         """
         Calculate average count Х in text and load result to database.
         """
@@ -26,11 +27,12 @@ class SimpleTask:
         :param message: message from queue RabbitMQ
         :return:
         """
-        async with message.process():
-            message = TextSchema.parse_obj(json.loads(message.body.decode()))
+        async with message.process(ignore_processed=True):
+            await message.ack()
+            message_body = TextSchema.parse_obj(json.loads(message.body.decode()))
             method = self.simple_task
             if method:
-                await method(message.text)
+                method(message_body.text)
 
 
 async def consumer_task(routing_key):
@@ -49,16 +51,18 @@ async def consumer_task(routing_key):
                                       login=os.environ.get("RABBITMQ_USER"),
                                       password=os.environ.get("RABBITMQ_PASSWORD"))
     channel = await connection.channel(publisher_confirms=False)
-    await channel.set_qos()
-    queue = await channel.declare_queue(queue_key, auto_delete=True, timeout=10000)
+    await channel.set_qos(prefetch_count=1)
+    queue = await channel.declare_queue(queue_key, auto_delete=True, arguments={"x-consumer-timeout": 30000})
     exchange = await channel.declare_exchange(routing_key,
                                               ExchangeType.X_DELAYED_MESSAGE,
                                               arguments={'x-delayed-type': 'direct'}
                                               )
     await queue.bind(exchange, queue_key)
     await queue.consume(simple_task.process_message)
-
     return simple_task, channel, queue
 
+if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.create_task(consumer_task(os.environ.get('RABBITMQ_QUEUE')))
 
 
