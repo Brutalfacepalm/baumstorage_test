@@ -39,10 +39,6 @@ class RabbitConnection:
                                                     login=os.environ.get("RABBITMQ_USER"),
                                                     password=os.environ.get("RABBITMQ_PASSWORD"))
             self._channel = await self._connection.channel(publisher_confirms=False)
-            # self._exchange = await self._channel.declare_exchange(os.environ.get("RABBITMQ_QUEUE"),
-            #                                                       ExchangeType.X_DELAYED_MESSAGE,
-            #                                                       arguments={'x-delayed-type': 'direct'}
-            #                                                       )
             logger.info('Connect RabbitMQ')
         except Exception as e:
             logger.error(f'Error connection to RabbitMQ with Exception: {e}')
@@ -55,15 +51,10 @@ class RabbitConnection:
         Publish message in exchange with delay.
         """
         try:
-            # _exchange = await self._channel.declare_exchange(routing_key,
-            #                                                  ExchangeType.X_DELAYED_MESSAGE,
-            #                                                  arguments={'x-delayed-type': 'direct'}
-            #                                                  )
             async with self._channel.transaction():
                 headers = None
                 if delay:
                     headers = {'x-delay': f'{delay * 1000}'}
-                # for message in [messages]:
                 message = message.dict()
                 if 'datetime' in message:
                     message['datetime'] = message['datetime'].strftime('%d.%m.%Y %H:%M:%S.%f')[:-3]

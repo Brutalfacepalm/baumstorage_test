@@ -33,7 +33,7 @@ class SimpleTask:
                 await method(message.text)
 
 
-async def task(routing_key):
+async def consumer_task(routing_key):
     """
     Connect to queue RabbitMQ, get message and run task for load result to database
     :param routing_key: kqy for queue and exchange
@@ -51,7 +51,7 @@ async def task(routing_key):
     channel = await connection.channel(publisher_confirms=False)
     await channel.set_qos()
     queue = await channel.declare_queue(queue_key, auto_delete=True, timeout=10000)
-    exchange = await channel.declare_exchange(queue_key,
+    exchange = await channel.declare_exchange(routing_key,
                                               ExchangeType.X_DELAYED_MESSAGE,
                                               arguments={'x-delayed-type': 'direct'}
                                               )
