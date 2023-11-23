@@ -33,6 +33,7 @@ class XTextQueryset:
                 session.add(created)
                 await session.commit()
                 await session.flush([created])
+            logger.info(f'Update data {data_dict["datatime"]}:{data_dict["title"]} on table xtext success.')
         except Exception as e:
             logger.error(f'Create or Update xtext was complete with error: {e}')
             await session.rollback()
