@@ -2,7 +2,7 @@ from datetime import datetime as dt
 from pydantic import BaseModel, Field, validator
 
 
-class XMessageSchema(BaseModel):
+class XTextSchema(BaseModel):
     """
     Schema for message to select from database and return GET method FastAPI.
     """
@@ -23,13 +23,6 @@ class XMessageSchema(BaseModel):
         validate and parse field x_avg_count_in_line in model of data from database
         """
         return round(value, 3)
-
-
-class XMessageViewSchema(XMessageSchema):
-    """
-    Additional XMessageSchema where add field ID
-    """
-    id: int = Field(..., description='ID')
 
 
 class TextSchema(BaseModel):

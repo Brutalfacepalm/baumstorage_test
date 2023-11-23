@@ -4,35 +4,47 @@ import json
 from aio_pika.message import AbstractIncomingMessage
 from aio_pika import ExchangeType, connect_robust
 from schemas import TextSchema
+from database import engine
+from database import sm as session_maker
+from querysets import XTextQueryset
+from getlogger import get_logger
 
 
 class SimpleTask:
     """
     SimpleTask. Count Х in message, create correct data and load data to database.
     """
-    def __int__(self):
-        self.x_count = 0
-        self.line_count = 0
+    ngn = engine
+    ssn = session_maker
+    logger = get_logger('consumer')
 
-    def simple_task(self, text):
+    @classmethod
+    async def create_one_message(cls, message):
         """
         Calculate average count Х in text and load result to database.
         """
-        self.x_count += text.count('Х')
-        self.line_count += 1
+        message = message.dict()
+        x_count = message['text'].count('Х')
+        async with cls.ssn.begin() as session:
 
-    async def process_message(self, message: AbstractIncomingMessage):
+            send_message_db = XTextQueryset()
+            await send_message_db.create_or_update(session,
+                                                   cls.logger,
+                                                   {'datetime': message['datetime'],
+                                                    'title': message['title'],
+                                                    'x_count': x_count,
+                                                    'line_count': 1})
+
+    @classmethod
+    async def process_message(cls, message: AbstractIncomingMessage):
         """
         Run task for message.
         :param message: message from queue RabbitMQ
         :return:
         """
-        async with message.process(ignore_processed=True):
-            await message.ack()
+        async with message.process():
             message_body = TextSchema.parse_obj(json.loads(message.body.decode()))
-            method = self.simple_task
-            if method:
-                method(message_body.text)
+            await cls.create_one_message(message_body)
 
 
 async def consumer_task(routing_key):
@@ -42,8 +54,6 @@ async def consumer_task(routing_key):
     :return:
     """
     simple_task = SimpleTask()
-    simple_task.x_count = 0
-    simple_task.line_count = 0
     queue_key = routing_key
 
     connection = await connect_robust(host=os.environ.get("RABBITMQ_HOST"),
@@ -52,17 +62,16 @@ async def consumer_task(routing_key):
                                       password=os.environ.get("RABBITMQ_PASSWORD"))
     channel = await connection.channel(publisher_confirms=False)
     await channel.set_qos(prefetch_count=1)
-    queue = await channel.declare_queue(queue_key, auto_delete=True, arguments={"x-consumer-timeout": 30000})
+    queue = await channel.declare_queue(queue_key)
     exchange = await channel.declare_exchange(routing_key,
                                               ExchangeType.X_DELAYED_MESSAGE,
                                               arguments={'x-delayed-type': 'direct'}
                                               )
     await queue.bind(exchange, queue_key)
     await queue.consume(simple_task.process_message)
-    return simple_task, channel, queue
+
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.create_task(consumer_task(os.environ.get('RABBITMQ_QUEUE')))
-
-
+    loop.run_forever()

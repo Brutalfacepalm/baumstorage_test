@@ -13,3 +13,15 @@ with open('O_Genri_Testovaya_20_vmeste (1).txt', 'r+') as f:
 
 
 requests.post(url, json=message)
+
+test_data = test_data.split('\n')
+x_count = 0
+line_count = 0
+for l in test_data:
+    l = l.strip()
+    if l:
+        line_count += 1
+        x_count += l.count('Х')
+
+
+print(x_count, line_count)

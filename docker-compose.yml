@@ -60,7 +60,7 @@ services:
       context: ./services/fastapi
       dockerfile: ./Dockerfile
     container_name: fastapi
-    command: uvicorn app:app --host 0.0.0.0 --port 8888 --workers 1 --lifespan on
+    command: uvicorn app:app --host 0.0.0.0 --port 8888 --workers 4 --lifespan on
     env_file:
       .env.dev
     volumes:
@@ -70,6 +70,23 @@ services:
     depends_on:
       - database
       - rabbitmq
+    networks:
+      fastapi:
+
+  consumer:
+    build:
+      context: ./services/fastapi
+      dockerfile: ./Dockerfile
+    container_name: consumer
+    command: python3 consumer.py
+    env_file:
+      .env.dev
+    volumes:
+      - ./services/fastapi:/fastapi
+    depends_on:
+      - database
+      - rabbitmq
+      - fastapi
     networks:
       fastapi:
 
