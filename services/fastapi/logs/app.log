@@ -1,0 +1,29 @@
+2023-11-23 18:54:37,316 — logger — INFO — Application FastAPI was created
+2023-11-23 18:54:37,316 — logger — INFO — Application FastAPI was created
+2023-11-23 18:54:37,316 — logger — INFO — Application FastAPI was created
+2023-11-23 18:54:37,318 — logger — INFO — Application FastAPI was created
+2023-11-23 18:54:37,324 — logger — INFO — Connect RabbitMQ
+2023-11-23 18:54:37,324 — logger — INFO — Connect RabbitMQ
+2023-11-23 18:54:37,325 — logger — INFO — Connect RabbitMQ
+2023-11-23 18:54:37,328 — logger — INFO — Connect RabbitMQ
+2023-11-23 18:54:37,403 — logger — INFO — Startup FastAPI
+2023-11-23 18:55:24,117 — logger — INFO — Get new source data
+2023-11-23 18:55:24,118 — logger — INFO — Start send messages after split text
+2023-11-23 18:56:24,002 — logger — INFO — Application FastAPI was created
+2023-11-23 18:56:24,003 — logger — INFO — Application FastAPI was created
+2023-11-23 18:56:24,010 — logger — INFO — Application FastAPI was created
+2023-11-23 18:56:24,011 — logger — INFO — Connect RabbitMQ
+2023-11-23 18:56:24,010 — logger — INFO — Application FastAPI was created
+2023-11-23 18:56:24,011 — logger — INFO — Connect RabbitMQ
+2023-11-23 18:56:24,018 — logger — INFO — Connect RabbitMQ
+2023-11-23 18:56:24,020 — logger — INFO — Connect RabbitMQ
+2023-11-23 18:56:24,082 — logger — INFO — Startup FastAPI
+2023-11-23 18:56:50,684 — logger — INFO — Get new source data
+2023-11-23 18:56:50,686 — logger — INFO — Start send messages after split text
+2023-11-23 18:56:57,299 — logger — INFO — Get new source data
+2023-11-23 18:56:57,301 — logger — INFO — Start send messages after split text
+2023-11-23 18:57:01,003 — logger — INFO — Get new source data
+2023-11-23 18:57:01,005 — logger — INFO — Start send messages after split text
+2023-11-23 18:57:02,766 — logger — INFO — Get new source data
+2023-11-23 18:57:02,767 — logger — INFO — Start send messages after split text
+2023-11-23 18:57:33,295 — logger — INFO — Select from database correct
