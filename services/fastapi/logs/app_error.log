@@ -1,6 +1,0 @@
-2023-11-21 13:59:11,945 — logger — ERROR — Error load data to database with exception (sqlalchemy.dialects.postgresql.asyncpg.ProgrammingError) <class 'asyncpg.exceptions.UndefinedColumnError'>: column xmessages.id does not exist
-[SQL: SELECT xmessages.datetime, xmessages.title, xmessages.x_count, xmessages.line_count, xmessages.id 
-FROM xmessages 
-WHERE xmessages.datetime = $1::TIMESTAMP WITHOUT TIME ZONE]
-[parameters: (datetime.datetime(2023, 11, 21, 16, 58, 50, 888000),)]
-(Background on this error at: https://sqlalche.me/e/20/f405)
