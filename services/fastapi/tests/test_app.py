@@ -1,40 +1,10 @@
 import pytest
-pytest_plugins = ('pytest_asyncio',)
+from httpx import AsyncClient
+from app import app
 
 
-def test_create_app():
-    pass
-
-
-def test_connect_to_api():
-    pass
-
-
-def test_post_text():
-    pass
-
-
-def test_post_incorrect_text():
-    pass
-
-
-def test_post_incorrect_datetime():
-    pass
-
-
-def test_get_statistic():
-    pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@pytest.mark.anyio
+async def test_connect_to_api():
+    async with AsyncClient(app=app, base_url='http://test') as ac:
+        response = await ac.get('/')
+    assert response.status_code == 200
